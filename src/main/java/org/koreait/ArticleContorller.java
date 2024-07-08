@@ -2,6 +2,7 @@ package org.koreait;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -37,26 +38,46 @@ class ArticleContorller {
     }
 
     public void doList() throws SQLException {
-        System.out.println(" 번호  /      시간      /      제목      /     내용     ");
+        System.out.println("  번호  /      시간      /      제목      /     내용     ");
         ResultSet rs = db.viewArticleList();
         while (rs.next()) {
-            int displayId = rs.getInt("id");
+            String displayId = rs.getString("id");
             String displayRegDate = dateTimeForDisplay(rs.getString("regDate"));
             String displayTitle = subForDisplay(rs.getString("title"));
             String displayBody = subForDisplay(rs.getString("body"));
 
-            System.out.printf("   %d   /   %s   /     %s     /     %s     \n",
+            if (displayId.length() == 1) displayId = "0" + displayId;
+
+            System.out.printf("   %s   /   %s   /     %s     /     %s     \n",
                     displayId, displayRegDate, displayBody, displayTitle);
         }
     }
 
     public void doDelete(int idx) {
         try {
-            db.deleteArticle(idx);
-            System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
+            int row = db.deleteArticle(idx);
+            if (row == 0) System.out.printf("%d번 article은 없습니다.\n", idx);
+            else System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
         } catch (SQLException e) {
             System.out.println("올바른 id number가 아닙니다.");
         }
+    }
+
+    public void doUpdate(int idx) {
+        try {
+            ResultSet rs = db.viewOneArticle(idx);
+            if (rs.next()) {
+                String oldTitle = rs.getString("title");
+                String oldBody = rs.getString("body");
+                System.out.println("기존 title : " + oldTitle);
+                System.out.println("기존 body : " + oldBody);
+            } else System.out.printf("%d번 article은 없습니다.", idx);
+
+        } catch (SQLException e) {
+
+        }
+//        int row = db.updateArticle(idx);
+//        if (row == 0) System.out.printf("%d번 article은 없습니다.\n", idx);
     }
 
     public String subForDisplay(String willSub) {
@@ -71,7 +92,7 @@ class ArticleContorller {
     public String dateTimeForDisplay(String dateTime) {
         String[] DateAndTime = dateTime.split(" ");
         String[] now = Util.getNow().split(" ");
-        if (DateAndTime[0].equals(now[0])) dateTime = DateAndTime[1];
+        if (DateAndTime[0].equals(now[0])) dateTime = " " + DateAndTime[1].substring(0, 8) + " ";
         else dateTime = DateAndTime[0];
 
         return dateTime;

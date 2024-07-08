@@ -46,11 +46,19 @@ public class Database {
         return pstmt.executeQuery(listSQL);
     }
 
-    public void deleteArticle(int deleteId) throws SQLException {
+    public int deleteArticle(int deleteId) throws SQLException {
         String deleteSQL = "DELETE FROM article WHERE id = ";
         deleteSQL += Integer.toString(deleteId);
         deleteSQL += ";";
         pstmt = con.prepareStatement(deleteSQL);
-        pstmt.executeUpdate();
+        return pstmt.executeUpdate();
+    }
+
+    public ResultSet viewOneArticle(int Idx) throws SQLException {
+        String viewSQL = "SELECT * FROM article WHERE `id` = ";
+        viewSQL += Integer.toString(Idx);
+        viewSQL += ";";
+        pstmt = con.prepareStatement(viewSQL);
+        return pstmt.executeQuery();
     }
 }
