@@ -1,15 +1,17 @@
 package org.koreait;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
 
     static int system_status = 0;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         Scanner sc = new Scanner(System.in);
-        ArticleContorller articleContorller = new ArticleContorller(sc);
+        Database db = new Database();
+        ArticleContorller articleContorller = new ArticleContorller(sc, db);
 
         System.out.println("== Article Manager Run ==");
         system_status = 1;
@@ -21,23 +23,27 @@ public class Main {
             String[] cmdBits = cmd.split(" ");
             String managerName = "";
             String actionMethod = "";
-            String idx = "";
+            int idx = 0;
             if (cmdBits.length == 1) actionMethod = cmdBits[0];
             else if (cmdBits.length == 2) actionMethod = cmdBits[1];
             else if (cmdBits.length == 3) {
                 actionMethod = cmdBits[1];
-                idx = cmdBits[2];
+                try {
+                    idx = Integer.parseInt(cmdBits[2]);
+                } catch (NumberFormatException e) {
+                    System.out.println("삭제/수정 id는 정수여야 합니다.");
+                }
             }
 
-            if (actionMethod.equals("write")) {
-                articleContorller.doWrite();
-            } else if (actionMethod.equals("list")) {
-                articleContorller.doList();
-            } else if (actionMethod.equals("exit")) {
-                System.out.println("== Article Manager Exit ==");
-                system_status = 0;
-            } else {
-                System.out.println("올바른 명령어를 입력해주세요.");
+            switch (actionMethod) {
+                case "exit" -> {
+                    System.out.println("== Article Manager Exit ==");
+                    system_status = 0;
+                }
+                case "write" -> articleContorller.doWrite();
+                case "list" -> articleContorller.doList();
+                case "delete" -> articleContorller.doDelete(idx);
+                default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }
     }
