@@ -71,10 +71,16 @@ class ArticleContorller {
                 String oldBody = rs.getString("body");
                 System.out.println("기존 title : " + oldTitle);
                 System.out.println("기존 body : " + oldBody);
+                System.out.print("새로운 title : ");
+                //try {
+                   // db.updateArticle()
+                //} catch (SQLException e) {
+
+                //}
+
             } else System.out.printf("%d번 article은 없습니다.", idx);
-
         } catch (SQLException e) {
-
+            System.out.println("올바른 id number가 아닙니다.");
         }
 //        int row = db.updateArticle(idx);
 //        if (row == 0) System.out.printf("%d번 article은 없습니다.\n", idx);

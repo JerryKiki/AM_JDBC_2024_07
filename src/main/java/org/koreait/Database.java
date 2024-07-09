@@ -61,4 +61,14 @@ public class Database {
         pstmt = con.prepareStatement(viewSQL);
         return pstmt.executeQuery();
     }
+
+    public int updateArticle(String title, String body, String idx) throws SQLException {
+        String updateSQL = "UPDATE article SET updateDate = ?, title = ?, body = ? WHERE id = ?";
+        pstmt = con.prepareStatement(updateSQL);
+        pstmt.setString(1, Util.getNow());
+        pstmt.setString(2, title);
+        pstmt.setString(3, body);
+        pstmt.setString(4, idx);
+        return pstmt.executeUpdate();
+    }
 }
