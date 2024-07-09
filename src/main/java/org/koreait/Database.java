@@ -11,6 +11,7 @@ public class Database {
     String user = "root"; //데이터베이스 ID
     String pw = ""; //데이터베이스 PW
     String SQL = "SELECT * from article";
+    ResultSet rs = null;
 
     Database() {
         try {
@@ -36,7 +37,7 @@ public class Database {
         pstmt.setString(3, title);
         pstmt.setString(4, body);
         pstmt.executeUpdate();
-        ResultSet rs = pstmt.getGeneratedKeys();
+        rs = pstmt.getGeneratedKeys();
         rs.next();
         return rs.getInt(1);
     }
@@ -63,12 +64,42 @@ public class Database {
     }
 
     public int updateArticle(String title, String body, int idx) throws SQLException {
-        String updateSQL = "UPDATE article SET updateDate = ?, title = ?, body = ? WHERE id = ?";
+        String updateSQL = "UPDATE article";
+        updateSQL += " SET updateDate = NOW()";
+        if(!title.isEmpty()) updateSQL += "," + " title = " + "'" + title + "'";
+        if(!body.isEmpty()) updateSQL += "," + " body = " + "'" + body + "'";
+        updateSQL += " WHERE id = " + idx + ";";
         pstmt = con.prepareStatement(updateSQL);
-        pstmt.setString(1, Util.getNow());
-        pstmt.setString(2, title);
-        pstmt.setString(3, body);
-        pstmt.setInt(4, idx);
-        return pstmt.executeUpdate();
+//        String updateSQL = "UPDATE article SET updateDate = ?, title = ?, body = ? WHERE id = ?";
+//        pstmt = con.prepareStatement(updateSQL);
+//        pstmt.setString(1, Util.getNow());
+//        pstmt.setString(2, title);
+//        pstmt.setString(3, body);
+//        pstmt.setInt(4, idx);
+        return pstmt.executeUpdate(updateSQL);
+    }
+
+    public void closeSource() {
+        try {
+            if (rs != null && !rs.isClosed()) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (con != null && !con.isClosed()) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (pstmt != null && !pstmt.isClosed()) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

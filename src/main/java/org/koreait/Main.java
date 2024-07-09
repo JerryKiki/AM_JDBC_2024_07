@@ -38,6 +38,7 @@ public class Main {
             switch (actionMethod) {
                 case "exit" -> {
                     System.out.println("== Article Manager Exit ==");
+                    db.closeSource();
                     system_status = 0;
                 }
                 case "write" -> articleContorller.doWrite();

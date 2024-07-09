@@ -38,7 +38,6 @@ class ArticleContorller {
         } catch (SQLException e) {
             System.out.println("doWrite SQL 에러 : " + e);
         }
-
     }
 
     public void doList() throws SQLException {
