@@ -44,6 +44,7 @@ public class Main {
                 case "list" -> articleContorller.doList();
                 case "delete" -> articleContorller.doDelete(idx);
                 case "update" -> articleContorller.doUpdate(idx);
+                case "detail" -> articleContorller.viewDetail(idx);
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }
