@@ -1,5 +1,9 @@
 package org.koreait;
 
+import org.koreait.util.DBUtil;
+import org.koreait.util.SecSql;
+import org.koreait.util.Util;
+
 import java.sql.*;
 
 public class Database {
@@ -30,16 +34,13 @@ public class Database {
     }
 
     public int insertArticle(String title, String body) throws SQLException {
-        String insertSQL = "INSERT INTO article(regDate, updateDate, title, body) VALUES (?, ?, ?, ?)";
-        pstmt = con.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
-        pstmt.setString(1, Util.getNow());
-        pstmt.setString(2, Util.getNow());
-        pstmt.setString(3, title);
-        pstmt.setString(4, body);
-        pstmt.executeUpdate();
-        rs = pstmt.getGeneratedKeys();
-        rs.next();
-        return rs.getInt(1);
+        SecSql sql = new SecSql();
+        sql.append("INSERT INTO article");
+        sql.append("SET regDate = NOW(),");
+        sql.append("updateDate = NOW(),");
+        sql.append("title = ?,", title);
+        sql.append("`body` = ?;", body);
+        return DBUtil.insert(con, sql);
     }
 
     public ResultSet viewArticleList() throws SQLException {
@@ -64,19 +65,13 @@ public class Database {
     }
 
     public int updateArticle(String title, String body, int idx) throws SQLException {
-        String updateSQL = "UPDATE article";
-        updateSQL += " SET updateDate = NOW()";
-        if(!title.isEmpty()) updateSQL += "," + " title = " + "'" + title + "'";
-        if(!body.isEmpty()) updateSQL += "," + " body = " + "'" + body + "'";
-        updateSQL += " WHERE id = " + idx + ";";
-        pstmt = con.prepareStatement(updateSQL);
-//        String updateSQL = "UPDATE article SET updateDate = ?, title = ?, body = ? WHERE id = ?";
-//        pstmt = con.prepareStatement(updateSQL);
-//        pstmt.setString(1, Util.getNow());
-//        pstmt.setString(2, title);
-//        pstmt.setString(3, body);
-//        pstmt.setInt(4, idx);
-        return pstmt.executeUpdate(updateSQL);
+        SecSql sql = new SecSql();
+        sql.append("UPDATE article");
+        sql.append("SET updateDate = NOW()");
+        if(!title.isEmpty()) sql.append(", title = ?", title);
+        if(!body.isEmpty()) sql.append(", `body` = ?", body);
+        sql.append("WHERE id = ?;", idx);
+        return DBUtil.update(con, sql);
     }
 
     public void closeSource() {
@@ -103,3 +98,28 @@ public class Database {
         }
     }
 }
+
+//기존 insert code
+//        String insertSQL = "INSERT INTO article(regDate, updateDate, title, body) VALUES (?, ?, ?, ?)";
+//        pstmt = con.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
+//        pstmt.setString(1, Util.getNow());
+//        pstmt.setString(2, Util.getNow());
+//        pstmt.setString(3, title);
+//        pstmt.setString(4, body);
+//        pstmt.executeUpdate();
+//        rs = pstmt.getGeneratedKeys();
+//        rs.next();
+//기존 update
+//        String updateSQL = "UPDATE article";
+//        updateSQL += " SET updateDate = NOW()";
+//        if(!title.isEmpty()) updateSQL += "," + " title = " + "'" + title + "'";
+//        if(!body.isEmpty()) updateSQL += "," + " body = " + "'" + body + "'";
+//        updateSQL += " WHERE id = " + idx + ";";
+//        pstmt = con.prepareStatement(updateSQL);
+//        String updateSQL = "UPDATE article SET updateDate = ?, title = ?, body = ? WHERE id = ?";
+//        pstmt = con.prepareStatement(updateSQL);
+//        pstmt.setString(1, Util.getNow());
+//        pstmt.setString(2, title);
+//        pstmt.setString(3, body);
+//        pstmt.setInt(4, idx);
+//        return pstmt.executeUpdate(updateSQL);

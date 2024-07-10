@@ -1,8 +1,9 @@
 package org.koreait;
 
+import org.koreait.util.Util;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -31,8 +32,16 @@ class ArticleContorller {
             System.out.println("게시글을 작성합니다.");
             System.out.print("title : ");
             String title = sc.nextLine();
+            if (title.isEmpty()) {
+                System.out.println("제목은 필수 입력 사항입니다.");
+                return;
+            }
             System.out.print("body : ");
             String body = sc.nextLine();
+            if (body.isEmpty()) {
+                System.out.println("내용은 필수 입력 사항입니다.");
+                return;
+            }
             int lastId = db.insertArticle(title, body);
             System.out.printf("%d번 게시글이 작성되었습니다.\n", lastId);
         } catch (SQLException e) {
