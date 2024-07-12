@@ -1,5 +1,8 @@
 package org.koreait;
 
+import org.koreait.article.ArticleContorller;
+import org.koreait.member.MemberController;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -12,6 +15,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Database db = new Database();
         ArticleContorller articleContorller = new ArticleContorller(sc, db);
+        MemberController memberController = new MemberController(sc, db);
 
         System.out.println("== Article Manager Run ==");
         system_status = 1;
@@ -46,6 +50,7 @@ public class Main {
                 case "delete" -> articleContorller.doDelete(idx);
                 case "update" -> articleContorller.doUpdate(idx);
                 case "detail" -> articleContorller.viewDetail(idx);
+                case "join" -> memberController.joinMember();
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }

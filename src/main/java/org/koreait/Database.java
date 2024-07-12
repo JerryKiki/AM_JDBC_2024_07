@@ -5,6 +5,8 @@ import org.koreait.util.SecSql;
 import org.koreait.util.Util;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class Database {
     Connection con = null; //데이터베이스와 연결을 위한 객체
@@ -74,6 +76,24 @@ public class Database {
         return DBUtil.update(con, sql);
     }
 
+    public int insertMember(String loginId, String loginPw, String nickName) throws SQLException {
+        SecSql sql = new SecSql();
+        sql.append("INSERT INTO member");
+        sql.append("SET regDate = NOW(),");
+        sql.append("loginId = ?,", loginId);
+        sql.append("loginPw = ?,", loginPw);
+        sql.append("nickName = ?;", nickName);
+        return DBUtil.insert(con, sql);
+    }
+
+    public boolean checkMemberId(String tryingJoin) throws SQLException {
+        SecSql sql = new SecSql();
+        sql.append("SELECT loginId FROM member WHERE loginId = ?;", tryingJoin);
+        Map<String, Object> check = DBUtil.selectRow(con, sql);
+        if (check.get("loginId") != null) return true; //있으면 트루
+        return false; //없으면 false
+    }
+
     public void closeSource() {
         try {
             if (rs != null && !rs.isClosed()) {
@@ -83,15 +103,15 @@ public class Database {
             e.printStackTrace();
         }
         try {
-            if (con != null && !con.isClosed()) {
-                con.close();
+            if (pstmt != null && !pstmt.isClosed()) {
+                pstmt.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            if (pstmt != null && !pstmt.isClosed()) {
-                pstmt.close();
+            if (con != null && !con.isClosed()) {
+                con.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();

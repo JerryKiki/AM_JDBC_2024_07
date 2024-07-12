@@ -1,5 +1,6 @@
-package org.koreait;
+package org.koreait.article;
 
+import org.koreait.Database;
 import org.koreait.util.Util;
 
 import java.sql.ResultSet;
@@ -8,23 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-class ArticleContorller {
-    private Map<Integer, Article> articles;
+public class ArticleContorller {
     private Scanner sc;
     private Database db;
 
-    ArticleContorller(Scanner sc, Database db) {
-        this.articles = new HashMap<>();
+    public ArticleContorller(Scanner sc, Database db) {
         this.sc = sc;
         this.db = db;
-    }
-
-    public Map<Integer, Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(Map<Integer, Article> articles) {
-        this.articles = articles;
     }
 
     public void doWrite() {

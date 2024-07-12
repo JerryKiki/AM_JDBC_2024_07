@@ -30,4 +30,18 @@ INSERT INTO article
 SET regDate = '2024-05-05 12:12:12',
     updateDate = '2024-05-05 12:12:12',
     title = 'TEST',
-    `body` = 'TEST'
+    `body` = 'TEST';
+
+#멤버 테이블 만들기...
+CREATE TABLE member(
+                       id INT(10) unsigned not null primary key auto_increment,
+                       regDate DATETIME not null,
+                       loginId char(100) not null unique,
+                       loginPw char(100) not null,
+                       nickName char(100) not null
+);
+
+DROP TABLE member;
+
+SELECT * FROM member;
+
