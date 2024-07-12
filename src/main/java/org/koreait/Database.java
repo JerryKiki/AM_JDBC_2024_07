@@ -88,10 +88,20 @@ public class Database {
 
     public boolean checkMemberId(String tryingJoin) throws SQLException {
         SecSql sql = new SecSql();
-        sql.append("SELECT loginId FROM member WHERE loginId = ?;", tryingJoin);
-        Map<String, Object> check = DBUtil.selectRow(con, sql);
-        if (check.get("loginId") != null) return true; //있으면 트루
-        return false; //없으면 false
+        sql.append("SELECT COUNT(*) > 0");
+        sql.append("FROM member");
+        sql.append("WHERE `loginId` = ?;", tryingJoin);
+//        Map<String, Object> check = DBUtil.selectRow(con, sql);
+//        if (check.get("loginId") != null) return true; //있으면 트루
+//        return false; //없으면 false
+        return DBUtil.selectRowBooleanValue(con, sql);
+    }
+
+    public Map<String, Object> getMemberInfo(String tryingLogin) throws SQLException {
+        SecSql sql = new SecSql();
+        sql.append("SELECT * FROM member");
+        sql.append("WHERE `loginId` = ?;", tryingLogin);
+        return DBUtil.selectRow(con, sql);
     }
 
     public void closeSource() {

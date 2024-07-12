@@ -51,6 +51,9 @@ public class Main {
                 case "update" -> articleContorller.doUpdate(idx);
                 case "detail" -> articleContorller.viewDetail(idx);
                 case "join" -> memberController.joinMember();
+                case "login" -> memberController.loginMember();
+                case "page" -> memberController.showMyPage();
+                case "logout" -> memberController.logoutMember();
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }
