@@ -1,14 +1,12 @@
-package org.koreait;
+package org.koreait.controller;
 
 import org.koreait.util.DBUtil;
 import org.koreait.util.SecSql;
-import org.koreait.util.Util;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Map;
 
-public class Database {
+public class DBController {
     Connection con = null; //데이터베이스와 연결을 위한 객체
     PreparedStatement pstmt = null; //SQL문을 데이터베이스에 보내기 위한 객체
     String driver = "org.mariadb.jdbc.Driver";   //1. JDBC Driver Class
@@ -19,7 +17,7 @@ public class Database {
     String SQL = "SELECT * from article";
     ResultSet rs = null;
 
-    Database() {
+    public DBController() {
         try {
             // 1. JDBC 드라이버 로딩 - MySQL JDBC 드라이버의 Driver Class 로딩
             Class.forName(driver);

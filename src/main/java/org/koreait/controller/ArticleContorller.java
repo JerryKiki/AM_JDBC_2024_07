@@ -1,19 +1,16 @@
-package org.koreait.article;
+package org.koreait.controller;
 
-import org.koreait.Database;
 import org.koreait.util.Util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class ArticleContorller {
     private Scanner sc;
-    private Database db;
+    private DBController db;
 
-    public ArticleContorller(Scanner sc, Database db) {
+    public ArticleContorller(Scanner sc, DBController db) {
         this.sc = sc;
         this.db = db;
     }

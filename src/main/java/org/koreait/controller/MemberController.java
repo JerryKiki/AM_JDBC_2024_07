@@ -1,18 +1,15 @@
-package org.koreait.member;
-
-import org.koreait.Database;
+package org.koreait.controller;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class MemberController {
     private Scanner sc;
-    private Database db;
+    private DBController db;
     private Map<String, Object> loginedMember;
 
-    public MemberController(Scanner sc, Database db) {
+    public MemberController(Scanner sc, DBController db) {
         this.sc = sc;
         this.db = db;
         this.loginedMember = null;
