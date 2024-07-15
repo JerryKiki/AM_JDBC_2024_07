@@ -1,8 +1,7 @@
 package org.koreait;
 
-import org.koreait.controller.ArticleContorller;
+import org.koreait.controller.ArticleController;
 import org.koreait.util.Connector;
-import org.koreait.controller.DBController;
 import org.koreait.controller.MemberController;
 
 import java.sql.Connection;
@@ -15,10 +14,9 @@ public class App {
 
     public void run() throws SQLException {
         Scanner sc = new Scanner(System.in);
-        //DBController db = new DBController();
         Connector connector = new Connector();
         Connection con = connector.getCon();
-        ArticleContorller articleContorller = new ArticleContorller(con);
+        ArticleController articleController = new ArticleController(con);
         MemberController memberController = new MemberController(con);
 
         System.out.println("== Article Manager Run ==");
@@ -29,7 +27,7 @@ public class App {
 
             String cmd = sc.nextLine();
             String[] cmdBits = cmd.split(" ");
-            String managerName = "";
+            String controllerName = "";
             String actionMethod = "";
             int idx = 0;
             if (cmdBits.length == 1) actionMethod = cmdBits[0];
@@ -49,11 +47,11 @@ public class App {
                     connector.closeConnection();
                     system_status = 0;
                 }
-                case "write" -> articleContorller.doWrite();
-                case "list" -> articleContorller.doList();
-                case "delete" -> articleContorller.doDelete(idx);
-                case "update" -> articleContorller.doUpdate(idx);
-                case "detail" -> articleContorller.viewDetail(idx);
+                case "write" -> articleController.doWrite();
+                case "list" -> articleController.doList();
+                case "delete" -> articleController.doDelete(idx);
+                case "update" -> articleController.doUpdate(idx);
+                case "detail" -> articleController.viewDetail(idx);
                 case "join" -> memberController.joinMember();
                 case "login" -> memberController.loginMember();
                 case "page" -> memberController.showMyPage();

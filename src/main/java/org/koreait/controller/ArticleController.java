@@ -5,17 +5,15 @@ import org.koreait.Service.ArticleService;
 import org.koreait.util.Util;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-public class ArticleContorller {
+public class ArticleController {
     private Connection con;
     private ArticleService articleService;
 
-    public ArticleContorller(Connection con) {
+    public ArticleController(Connection con) {
         this.con = con;
         this.articleService = new ArticleService(con);
     }
