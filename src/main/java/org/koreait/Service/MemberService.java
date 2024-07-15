@@ -1,11 +1,7 @@
 package org.koreait.Service;
 
 import org.koreait.DAO.MemberDao;
-import org.koreait.util.DBUtil;
-import org.koreait.util.SecSql;
-
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
 
 public class MemberService {
@@ -18,15 +14,15 @@ public class MemberService {
         this.con = con;
     }
 
-    public boolean checkMemberId(String tryingJoin) throws SQLException {
+    public boolean checkMemberId(String tryingJoin) {
         return memberDao.checkMemberId(tryingJoin);
     }
 
-    public int insertMember(String loginId, String loginPw, String nickName) throws SQLException {
+    public int insertMember(String loginId, String loginPw, String nickName) {
         return memberDao.insertMember(loginId, loginPw, nickName);
     }
 
-    public Map<String, Object> getMemberInfo(String tryingLogin) throws SQLException {
+    public Map<String, Object> getMemberInfo(String tryingLogin) {
         return memberDao.getMemberInfo(tryingLogin);
     }
 }

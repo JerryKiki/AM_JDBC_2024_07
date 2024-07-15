@@ -4,7 +4,6 @@ import org.koreait.util.DBUtil;
 import org.koreait.util.SecSql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
 
 public class MemberDao {

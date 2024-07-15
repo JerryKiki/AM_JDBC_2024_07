@@ -93,12 +93,10 @@ public class ArticleController {
                 String newTitle = Container.getSc().nextLine();
                 System.out.print("새로운 body : ");
                 String newBody = Container.getSc().nextLine();
-                try {
-                    int row = articleService.updateArticle(newTitle, newBody, idx);
-                    if (row > 0) System.out.printf("%d번 article이 수정되었습니다.\n", idx);
-                } catch (SQLException e) {
-                    System.out.println("doUpdate SQL 에러 : " + e);
-                }
+
+                int row = articleService.updateArticle(newTitle, newBody, idx);
+                if (row > 0) System.out.printf("%d번 article이 수정되었습니다.\n", idx);
+
             } else System.out.printf("%d번 article은 없습니다.\n", idx);
         }
     }

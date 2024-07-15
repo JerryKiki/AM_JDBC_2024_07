@@ -1,12 +1,7 @@
 package org.koreait.Service;
 
 import org.koreait.DAO.ArticleDao;
-import org.koreait.util.DBUtil;
-import org.koreait.util.SecSql;
-
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +29,7 @@ public class ArticleService {
         return articleDao.viewOneArticle(Idx);
     }
 
-    public int updateArticle(String title, String body, int idx) throws SQLException {
+    public int updateArticle(String title, String body, int idx) {
         return articleDao.updateArticle(title, body, idx);
     }
 }
