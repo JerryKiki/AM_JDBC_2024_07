@@ -33,36 +33,36 @@ public class DBController {
         }
     }
 
-    public int insertArticle(String title, String body) throws SQLException {
-        SecSql sql = new SecSql();
-        sql.append("INSERT INTO article");
-        sql.append("SET regDate = NOW(),");
-        sql.append("updateDate = NOW(),");
-        sql.append("title = ?,", title);
-        sql.append("`body` = ?;", body);
-        return DBUtil.insert(con, sql);
-    }
+//    public int insertArticle(String title, String body) throws SQLException {
+//        SecSql sql = new SecSql();
+//        sql.append("INSERT INTO article");
+//        sql.append("SET regDate = NOW(),");
+//        sql.append("updateDate = NOW(),");
+//        sql.append("title = ?,", title);
+//        sql.append("`body` = ?;", body);
+//        return DBUtil.insert(con, sql);
+//    }
 
-    public ResultSet viewArticleList() throws SQLException {
-        String listSQL = "SELECT * FROM article ORDER BY `id` DESC";
-        return pstmt.executeQuery(listSQL);
-    }
+//    public ResultSet viewArticleList() throws SQLException {
+//        String listSQL = "SELECT * FROM article ORDER BY `id` DESC";
+//        return pstmt.executeQuery(listSQL);
+//    }
 
-    public int deleteArticle(int deleteId) throws SQLException {
-        String deleteSQL = "DELETE FROM article WHERE id = ";
-        deleteSQL += Integer.toString(deleteId);
-        deleteSQL += ";";
-        pstmt = con.prepareStatement(deleteSQL);
-        return pstmt.executeUpdate();
-    }
-
-    public ResultSet viewOneArticle(int Idx) throws SQLException {
-        String viewSQL = "SELECT * FROM article WHERE `id` = ";
-        viewSQL += Integer.toString(Idx);
-        viewSQL += ";";
-        pstmt = con.prepareStatement(viewSQL);
-        return pstmt.executeQuery();
-    }
+//    public int deleteArticle(int deleteId) throws SQLException {
+//        String deleteSQL = "DELETE FROM article WHERE id = ";
+//        deleteSQL += Integer.toString(deleteId);
+//        deleteSQL += ";";
+//        pstmt = con.prepareStatement(deleteSQL);
+//        return pstmt.executeUpdate();
+//    }
+//
+//    public ResultSet viewOneArticle(int Idx) throws SQLException {
+//        String viewSQL = "SELECT * FROM article WHERE `id` = ";
+//        viewSQL += Integer.toString(Idx);
+//        viewSQL += ";";
+//        pstmt = con.prepareStatement(viewSQL);
+//        return pstmt.executeQuery();
+//    }
 
     public int updateArticle(String title, String body, int idx) throws SQLException {
         SecSql sql = new SecSql();
@@ -74,33 +74,33 @@ public class DBController {
         return DBUtil.update(con, sql);
     }
 
-    public int insertMember(String loginId, String loginPw, String nickName) throws SQLException {
-        SecSql sql = new SecSql();
-        sql.append("INSERT INTO member");
-        sql.append("SET regDate = NOW(),");
-        sql.append("loginId = ?,", loginId);
-        sql.append("loginPw = ?,", loginPw);
-        sql.append("nickName = ?;", nickName);
-        return DBUtil.insert(con, sql);
-    }
-
-    public boolean checkMemberId(String tryingJoin) throws SQLException {
-        SecSql sql = new SecSql();
-        sql.append("SELECT COUNT(*) > 0");
-        sql.append("FROM member");
-        sql.append("WHERE `loginId` = ?;", tryingJoin);
-//        Map<String, Object> check = DBUtil.selectRow(con, sql);
-//        if (check.get("loginId") != null) return true; //있으면 트루
-//        return false; //없으면 false
-        return DBUtil.selectRowBooleanValue(con, sql);
-    }
-
-    public Map<String, Object> getMemberInfo(String tryingLogin) throws SQLException {
-        SecSql sql = new SecSql();
-        sql.append("SELECT * FROM member");
-        sql.append("WHERE `loginId` = ?;", tryingLogin);
-        return DBUtil.selectRow(con, sql);
-    }
+//    public int insertMember(String loginId, String loginPw, String nickName) throws SQLException {
+//        SecSql sql = new SecSql();
+//        sql.append("INSERT INTO member");
+//        sql.append("SET regDate = NOW(),");
+//        sql.append("loginId = ?,", loginId);
+//        sql.append("loginPw = ?,", loginPw);
+//        sql.append("nickName = ?;", nickName);
+//        return DBUtil.insert(con, sql);
+//    }
+//
+//    public boolean checkMemberId(String tryingJoin) throws SQLException {
+//        SecSql sql = new SecSql();
+//        sql.append("SELECT COUNT(*) > 0");
+//        sql.append("FROM member");
+//        sql.append("WHERE `loginId` = ?;", tryingJoin);
+////        Map<String, Object> check = DBUtil.selectRow(con, sql);
+////        if (check.get("loginId") != null) return true; //있으면 트루
+////        return false; //없으면 false
+//        return DBUtil.selectRowBooleanValue(con, sql);
+//    }
+//
+//    public Map<String, Object> getMemberInfo(String tryingLogin) throws SQLException {
+//        SecSql sql = new SecSql();
+//        sql.append("SELECT * FROM member");
+//        sql.append("WHERE `loginId` = ?;", tryingLogin);
+//        return DBUtil.selectRow(con, sql);
+//    }
 
     public void closeSource() {
         try {

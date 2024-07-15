@@ -1,89 +1,83 @@
 package org.koreait.controller;
 
+import org.koreait.Container;
+import org.koreait.Service.ArticleService;
 import org.koreait.util.Util;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ArticleContorller {
-    private Scanner sc;
-    private DBController db;
+    private Connection con;
+    private ArticleService articleService;
 
-    public ArticleContorller(Scanner sc, DBController db) {
-        this.sc = sc;
-        this.db = db;
+    public ArticleContorller(Connection con) {
+        this.con = con;
+        this.articleService = new ArticleService(con);
+    }
+
+    public void doAction() {
+
     }
 
     public void doWrite() {
-        try {
-            System.out.println("게시글을 작성합니다.");
-            System.out.print("title : ");
-            String title = sc.nextLine();
-            if (title.isEmpty()) {
-                System.out.println("제목은 필수 입력 사항입니다.");
-                return;
-            }
-            System.out.print("body : ");
-            String body = sc.nextLine();
-            if (body.isEmpty()) {
-                System.out.println("내용은 필수 입력 사항입니다.");
-                return;
-            }
-            int lastId = db.insertArticle(title, body);
-            System.out.printf("%d번 게시글이 작성되었습니다.\n", lastId);
-        } catch (SQLException e) {
-            System.out.println("doWrite SQL 에러 : " + e);
+        System.out.println("게시글을 작성합니다.");
+        System.out.print("title : ");
+        String title = Container.getSc().nextLine();
+        if (title.isEmpty()) {
+            System.out.println("제목은 필수 입력 사항입니다.");
+            return;
         }
+        System.out.print("body : ");
+        String body = Container.getSc().nextLine();
+        if (body.isEmpty()) {
+            System.out.println("내용은 필수 입력 사항입니다.");
+            return;
+        }
+        int lastId = articleService.insertArticle(title, body);
+        System.out.printf("%d번 게시글이 작성되었습니다.\n", lastId);
     }
 
     public void doList() throws SQLException {
-        try {
-            System.out.println("  번호  /      일시      /      제목      /     내용     ");
-            ResultSet rs = db.viewArticleList();
-            while (rs.next()) {
-                String displayId = rs.getString("id");
-                String displayRegDate = dateTimeForDisplay(rs.getString("regDate"));
-                String displayTitle = subForDisplay(rs.getString("title"));
-                String displayBody = subForDisplay(rs.getString("body"));
+        System.out.println("  번호  /      일시      /      제목      /     내용     ");
+        List<Map<String, Object>> rs = articleService.viewArticleList();
+        for (Map<String, Object> map : rs) {
+            String displayId = map.get("id").toString();
+            String displayRegDate = dateTimeForDisplay(map.get("regDate").toString());
+            String displayTitle = subForDisplay(map.get("title").toString());
+            String displayBody = subForDisplay(map.get("body").toString());
 
-                if (displayId.length() == 1) displayId = "0" + displayId;
+            if (displayId.length() == 1) displayId = "0" + displayId;
 
-                System.out.printf("   %s   /   %s   /     %s     /     %s     \n",
-                        displayId, displayRegDate, displayBody, displayTitle);
-            }
-        } catch (SQLException e) {
-            System.out.println("doList SQL 에러 : " + e);
+            System.out.printf("   %s   /   %s   /     %s     /     %s     \n",
+                    displayId, displayRegDate, displayBody, displayTitle);
         }
     }
 
     public void doDelete(int idx) {
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
-            try {
-                int row = db.deleteArticle(idx);
-                if (row == 0) System.out.printf("%d번 article은 없습니다.\n", idx);
-                else System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
-            } catch (SQLException e) {
-                System.out.println("doDelete SQL 에러 : " + e);
-            }
+            int row = articleService.deleteArticle(idx);
+            if (row == 0) System.out.printf("%d번 article은 없습니다.\n", idx);
+            else System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
         }
     }
 
     public void viewDetail(int idx) {
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
-            try {
-                ResultSet rs = db.viewOneArticle(idx);
-                if (rs.next()) {
-                    System.out.println("번호 : " + rs.getString("id"));
-                    System.out.println("작성 일시 : " + rs.getString("regDate").substring(0, 19));
-                    System.out.println("최종 수정 날짜 : " + rs.getString("updateDate"));
-                    System.out.println("제목 : " + rs.getString("title"));
-                    System.out.println("내용 : " + rs.getString("body"));
-                } else System.out.printf("%d번 article은 없습니다.\n", idx);
-            } catch (SQLException e) {
-                System.out.println("viewOneArticle SQL에러 : " + e);
+            Map<String, Object> rs = articleService.viewOneArticle(idx);
+            if (rs.get("id") == null) System.out.printf("%d번 article은 없습니다.\n", idx);
+            else {
+                System.out.println("번호 : " + rs.get("id"));
+                System.out.println("작성 일시 : " + rs.get("regDate"));
+                System.out.println("최종 수정 날짜 : " + rs.get("updateDate"));
+                System.out.println("제목 : " + rs.get("title"));
+                System.out.println("내용 : " + rs.get("body"));
             }
         }
     }
@@ -91,27 +85,23 @@ public class ArticleContorller {
     public void doUpdate(int idx) {
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
-            try {
-                ResultSet rs = db.viewOneArticle(idx);
-                if (rs.next()) {
-                    String oldTitle = rs.getString("title");
-                    String oldBody = rs.getString("body");
-                    System.out.println("기존 title : " + oldTitle);
-                    System.out.println("기존 body : " + oldBody);
-                    System.out.print("새로운 title : ");
-                    String newTitle = sc.nextLine();
-                    System.out.print("새로운 body : ");
-                    String newBody = sc.nextLine();
-                    try {
-                        int row = db.updateArticle(newTitle, newBody, idx);
-                        if (row > 0) System.out.printf("%d번 article이 수정되었습니다.\n", idx);
-                    } catch (SQLException e) {
-                        System.out.println("doUpdate SQL 에러 : " + e);
-                    }
-                } else System.out.printf("%d번 article은 없습니다.\n", idx);
-            } catch (SQLException e) {
-                System.out.println("viewOneArticle SQL 에러 : " + e);
-            }
+            Map<String, Object> rs = articleService.viewOneArticle(idx);
+            if (rs.get("id") != null) {
+                String oldTitle = (String) rs.get("title");
+                String oldBody = (String) rs.get("body");
+                System.out.println("기존 title : " + oldTitle);
+                System.out.println("기존 body : " + oldBody);
+                System.out.print("새로운 title : ");
+                String newTitle = Container.getSc().nextLine();
+                System.out.print("새로운 body : ");
+                String newBody = Container.getSc().nextLine();
+                try {
+                    int row = articleService.updateArticle(newTitle, newBody, idx);
+                    if (row > 0) System.out.printf("%d번 article이 수정되었습니다.\n", idx);
+                } catch (SQLException e) {
+                    System.out.println("doUpdate SQL 에러 : " + e);
+                }
+            } else System.out.printf("%d번 article은 없습니다.\n", idx);
         }
     }
 

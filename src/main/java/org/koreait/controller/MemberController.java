@@ -1,21 +1,28 @@
 package org.koreait.controller;
 
+import org.koreait.Container;
+import org.koreait.Service.MemberService;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.Scanner;
 
 public class MemberController {
-    private Scanner sc;
-    private DBController db;
     private Map<String, Object> loginedMember;
+    private MemberService memberService;
+    private Connection con;
 
-    public MemberController(Scanner sc, DBController db) {
-        this.sc = sc;
-        this.db = db;
+    public MemberController(Connection con) {
+        this.con = con;
+        memberService = new MemberService(con);
         this.loginedMember = null;
     }
 
     public void joinMember() {
+        if (loginedMember != null) {
+            System.out.println("로그인 중에는 이용하실 수 없습니다.");
+            return;
+        }
         System.out.println("== 회원가입 ==");
         String loginId;
         String loginPw;
@@ -23,10 +30,10 @@ public class MemberController {
         String nickName;
         while (true) {
             System.out.print("아이디 : ");
-            loginId = checkInput(sc.nextLine());
+            loginId = checkInput(Container.getSc().nextLine());
             if (loginId == null) continue;
             try {
-                if (db.checkMemberId(loginId)) {
+                if (memberService.checkMemberId(loginId)) {
                     System.out.println("이미 사용중인 아이디입니다.");
                     continue;
                 }
@@ -37,10 +44,10 @@ public class MemberController {
         }
         while (true) {
             System.out.print("비밀번호 : ");
-            loginPw = checkInput(sc.nextLine());
+            loginPw = checkInput(Container.getSc().nextLine());
             if (loginPw == null) continue;
             System.out.print("비밀번호 확인 : ");
-            pwCheck = checkInput(sc.nextLine());
+            pwCheck = checkInput(Container.getSc().nextLine());
             if (pwCheck == null) continue;
             else if (!pwCheck.equals(loginPw)) {
                 System.out.println("비밀번호가 다릅니다.");
@@ -50,11 +57,11 @@ public class MemberController {
         }
         while (true) {
             System.out.print("닉네임 : ");
-            nickName = checkInput(sc.nextLine());
+            nickName = checkInput(Container.getSc().nextLine());
             if (nickName != null) break;
         }
         try {
-            int lastId = db.insertMember(loginId, loginPw, nickName);
+            int lastId = memberService.insertMember(loginId, loginPw, nickName);
             System.out.printf("%d번 가입자 %s님 환영합니다.\n", lastId, nickName);
         } catch (SQLException e) {
             System.out.println("joinMember 에러 : " + e);
@@ -69,11 +76,11 @@ public class MemberController {
         System.out.println("== 로그인 ==");
         while (true) {
             System.out.print("아이디 : ");
-            String inputId = checkInput(sc.nextLine());
+            String inputId = checkInput(Container.getSc().nextLine());
             System.out.print("비밀번호 : ");
-            String inputPw = checkInput(sc.nextLine());
+            String inputPw = checkInput(Container.getSc().nextLine());
             try {
-                Map<String, Object> tryingLogin = db.getMemberInfo(inputId);
+                Map<String, Object> tryingLogin = memberService.getMemberInfo(inputId);
                 if (tryingLogin.isEmpty()) {
                     System.out.println("해당 ID는 존재하지 않습니다.");
                     continue;
