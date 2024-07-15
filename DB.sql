@@ -45,3 +45,10 @@ DROP TABLE member;
 
 SELECT * FROM member;
 
+SELECT a.id, a.regDate, a.title, a.body, m.nickName
+FROM article a
+         INNER JOIN `member` m
+                    ON a.author = m.id;
+
+SELECT * FROM article;
+

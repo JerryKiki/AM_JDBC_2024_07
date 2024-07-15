@@ -5,7 +5,6 @@ import org.koreait.Service.ArticleService;
 import org.koreait.util.Util;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,11 @@ public class ArticleController {
 
     public void doAction(String actionMethod, int idx) {
         if (MemberController.getLoginedMember() == null){
-            System.out.println("로그인 후에 이용해주세요.");
+            switch (actionMethod) {
+                case "list" -> doList();
+                case "write", "delete", "update", "detail" -> System.out.println("로그인 후에 이용해주세요.");
+                default -> System.out.println("올바른 명령어를 입력해주세요.");
+            }
             return;
         }
         switch (actionMethod) {
@@ -81,7 +84,7 @@ public class ArticleController {
                 System.out.printf("%d번 article은 없습니다.\n", idx);
                 return;
             }
-            if (!checking.get("author").equals(nowMemberId)) {
+            if (!checking.get("author").toString().equals(nowMemberId)) {
                 System.out.println("자신이 작성한 글만 지울 수 있습니다.");
                 return;
             }
@@ -110,12 +113,11 @@ public class ArticleController {
         Map<String, Object> nowMember = MemberController.getLoginedMember();
         String nowMemberId = nowMember.get("id").toString();
 
-
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
             Map<String, Object> checking = articleService.viewOneArticle(idx);
             if (checking.get("id") != null) {
-                if (!checking.get("author").equals(nowMemberId)) {
+                if (!checking.get("author").toString().equals(nowMemberId)) {
                     System.out.println("자신이 작성한 글만 수정할 수 있습니다.");
                     return;
                 }

@@ -80,8 +80,16 @@ public class MemberController {
         while (true) {
             System.out.print("아이디 : ");
             String inputId = checkInput(Container.getSc().nextLine());
+            if (inputId.isEmpty()) {
+                System.out.println("id를 다시 입력해주세요.");
+                continue;
+            }
             System.out.print("비밀번호 : ");
             String inputPw = checkInput(Container.getSc().nextLine());
+            if (inputPw.isEmpty()) {
+                System.out.println("다시 입력해주세요.");
+                continue;
+            }
 
             Map<String, Object> tryingLogin = memberService.getMemberInfo(inputId);
 
@@ -133,10 +141,10 @@ public class MemberController {
         s = s.trim();
         if (s.isEmpty()) {
             System.out.println("필수 입력 사항입니다.");
-            return null;
+            return "";
         } else if (s.contains(" ")) {
             System.out.println("공백은 포함하실 수 없습니다.");
-            return null;
+            return "";
         } else return s;
     }
 
