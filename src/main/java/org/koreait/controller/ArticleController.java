@@ -18,7 +18,7 @@ public class ArticleController {
     }
 
     public void doAction(String actionMethod, int idx) {
-        if (MemberController.getLoginedMember() == null){
+        if (MemberController.getLoginMember() == null){
             switch (actionMethod) {
                 case "list" -> doList();
                 case "write", "delete", "update", "detail" -> System.out.println("로그인 후에 이용해주세요.");
@@ -37,7 +37,7 @@ public class ArticleController {
     }
 
     public void doWrite() {
-        Map<String, Object> nowMember = MemberController.getLoginedMember();
+        Map<String, Object> nowMember = MemberController.getLoginMember();
         int nowMemberId = Integer.parseInt(nowMember.get("id").toString());
         System.out.println("게시글을 작성합니다.");
         System.out.print("title : ");
@@ -74,7 +74,7 @@ public class ArticleController {
     }
 
     public void doDelete(int idx) {
-        Map<String, Object> nowMember = MemberController.getLoginedMember();
+        Map<String, Object> nowMember = MemberController.getLoginMember();
         String nowMemberId = nowMember.get("id").toString();
 
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
@@ -110,7 +110,7 @@ public class ArticleController {
     }
 
     public void doUpdate(int idx) {
-        Map<String, Object> nowMember = MemberController.getLoginedMember();
+        Map<String, Object> nowMember = MemberController.getLoginMember();
         String nowMemberId = nowMember.get("id").toString();
 
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");

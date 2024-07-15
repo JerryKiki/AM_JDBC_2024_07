@@ -8,28 +8,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemberController {
-    private static Map<String, Object> loginedMember;
+    private static Map<String, Object> loginMember;
     private MemberService memberService;
     private Connection con;
 
     public MemberController(Connection con) {
         this.con = con;
         memberService = new MemberService(con);
-        this.loginedMember = null;
+        loginMember = null;
     }
 
     public void doAction(String actionMethod, int idx) {
         switch (actionMethod) {
             case "join" -> joinMember();
             case "login" -> loginMember();
-            case "page" -> showMyPage();
+            case "profile" -> showMyPage();
             case "logout" -> logoutMember();
             default -> System.out.println("올바른 명령어를 입력해주세요.");
         }
     }
 
     public void joinMember() {
-        if (loginedMember != null) {
+        if (loginMember != null) {
             System.out.println("로그인 중에는 이용하실 수 없습니다.");
             return;
         }
@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     public void loginMember() {
-        if (loginedMember != null) {
+        if (loginMember != null) {
             System.out.println("이미 로그인 중입니다.");
             return;
         }
@@ -104,36 +104,38 @@ public class MemberController {
                 } else {
                     triedId.put(inputId, 1);
                 }
-                if (triedId.get(inputId) == 3) {
-                    System.out.println("비밀번호 3회 오류!");
+                if (triedId.get(inputId) >= 3) {
+                    System.out.println("해당 아이디에 대해 비밀번호 3회 오류!");
                     System.out.println("잠시 후 다시 시도해주십시오.");
                     break;
                 }
                 continue;
             }
 
-            this.loginedMember = tryingLogin;
+            loginMember = tryingLogin;
 
             System.out.println("== 로그인 성공 ==");
+            System.out.printf("== %s님 환영합니다 ==\n", loginMember.get("nickName"));
             break;
         }
     }
 
     public void showMyPage() {
-        if (loginedMember != null) {
-            System.out.println("고유번호 : " + loginedMember.get("id"));
-            System.out.println("아이디 : " + loginedMember.get("loginId"));
-            System.out.println("가입일시 : " + loginedMember.get("regDate"));
-            System.out.println("닉네임 : " + loginedMember.get("nickName"));
+        if (loginMember != null) {
+            System.out.println("== member profile ==");
+            System.out.println("고유번호 : " + loginMember.get("id"));
+            System.out.println("아이디 : " + loginMember.get("loginId"));
+            System.out.println("가입일시 : " + loginMember.get("regDate"));
+            System.out.println("닉네임 : " + loginMember.get("nickName"));
         } else System.out.println("로그인 후 사용해주세요.");
     }
 
     public void logoutMember() {
-        if (loginedMember == null) {
+        if (loginMember == null) {
             System.out.println("이미 로그아웃 상태입니다.");
         } else {
-            System.out.println("== 로그아웃 ==");
-            this.loginedMember = null;
+            System.out.printf("== %s님 로그아웃 ==\n", loginMember.get("nickName"));
+            loginMember = null;
         }
     }
 
@@ -148,7 +150,7 @@ public class MemberController {
         } else return s;
     }
 
-    public static Map<String, Object> getLoginedMember() {
-        return loginedMember;
+    public static Map<String, Object> getLoginMember() {
+        return loginMember;
     }
 }
