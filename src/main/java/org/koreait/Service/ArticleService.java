@@ -13,8 +13,8 @@ public class ArticleService {
         this.articleDao = new ArticleDao(con);
     }
 
-    public int insertArticle(String title, String body) {
-        return articleDao.insertArticle(title, body);
+    public int insertArticle(String title, String body, int nowMemberId) {
+        return articleDao.insertArticle(title, body, nowMemberId);
     }
 
     public List<Map<String, Object>> viewArticleList() {

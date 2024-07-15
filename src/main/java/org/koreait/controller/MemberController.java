@@ -4,10 +4,11 @@ import org.koreait.Container;
 import org.koreait.Service.MemberService;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MemberController {
-    private Map<String, Object> loginedMember;
+    private static Map<String, Object> loginedMember;
     private MemberService memberService;
     private Connection con;
 
@@ -15,6 +16,16 @@ public class MemberController {
         this.con = con;
         memberService = new MemberService(con);
         this.loginedMember = null;
+    }
+
+    public void doAction(String actionMethod, int idx) {
+        switch (actionMethod) {
+            case "join" -> joinMember();
+            case "login" -> loginMember();
+            case "page" -> showMyPage();
+            case "logout" -> logoutMember();
+            default -> System.out.println("올바른 명령어를 입력해주세요.");
+        }
     }
 
     public void joinMember() {
@@ -65,6 +76,7 @@ public class MemberController {
             return;
         }
         System.out.println("== 로그인 ==");
+        Map<String, Integer> triedId = new HashMap<>();
         while (true) {
             System.out.print("아이디 : ");
             String inputId = checkInput(Container.getSc().nextLine());
@@ -79,6 +91,16 @@ public class MemberController {
             }
             if (!tryingLogin.get("loginPw").equals(inputPw)) {
                 System.out.println("비밀번호가 틀립니다.");
+                if (triedId.containsKey(inputId)) {
+                    triedId.put(inputId, triedId.get(inputId) + 1);
+                } else {
+                    triedId.put(inputId, 1);
+                }
+                if (triedId.get(inputId) == 3) {
+                    System.out.println("비밀번호 3회 오류!");
+                    System.out.println("잠시 후 다시 시도해주십시오.");
+                    break;
+                }
                 continue;
             }
 
@@ -116,5 +138,9 @@ public class MemberController {
             System.out.println("공백은 포함하실 수 없습니다.");
             return null;
         } else return s;
+    }
+
+    public static Map<String, Object> getLoginedMember() {
+        return loginedMember;
     }
 }

@@ -30,9 +30,15 @@ public class App {
             String controllerName = "";
             String actionMethod = "";
             int idx = 0;
-            if (cmdBits.length == 1) actionMethod = cmdBits[0];
-            else if (cmdBits.length == 2) actionMethod = cmdBits[1];
+            if (cmdBits.length == 1) {
+                actionMethod = cmdBits[0];
+            }
+            else if (cmdBits.length == 2) {
+                controllerName = cmdBits[0];
+                actionMethod = cmdBits[1];
+            }
             else if (cmdBits.length == 3) {
+                controllerName = cmdBits[0];
                 actionMethod = cmdBits[1];
                 try {
                     idx = Integer.parseInt(cmdBits[2]);
@@ -41,21 +47,16 @@ public class App {
                 }
             }
 
-            switch (actionMethod) {
-                case "exit" -> {
-                    System.out.println("== Article Manager Exit ==");
-                    connector.closeConnection();
-                    system_status = 0;
-                }
-                case "write" -> articleController.doWrite();
-                case "list" -> articleController.doList();
-                case "delete" -> articleController.doDelete(idx);
-                case "update" -> articleController.doUpdate(idx);
-                case "detail" -> articleController.viewDetail(idx);
-                case "join" -> memberController.joinMember();
-                case "login" -> memberController.loginMember();
-                case "page" -> memberController.showMyPage();
-                case "logout" -> memberController.logoutMember();
+            if (actionMethod.equals("exit")) {
+                System.out.println("== Article Manager Exit ==");
+                connector.closeConnection();
+                system_status = 0;
+                break;
+            }
+
+            switch (controllerName) {
+                case "article" -> articleController.doAction(actionMethod, idx);
+                case "member" -> memberController.doAction(actionMethod, idx);
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }

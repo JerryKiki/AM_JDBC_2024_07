@@ -15,20 +15,23 @@ public class ArticleDao {
         this.con = con;
     }
 
-    public int insertArticle(String title, String body) {
+    public int insertArticle(String title, String body, int nowMemberId) {
         SecSql sql = new SecSql();
         sql.append("INSERT INTO article");
         sql.append("SET regDate = NOW(),");
         sql.append("updateDate = NOW(),");
         sql.append("title = ?,", title);
-        sql.append("`body` = ?;", body);
+        sql.append("`body` = ?,", body);
+        sql.append("author = ?;", nowMemberId);
         return DBUtil.insert(con, sql);
     }
 
     public List<Map<String, Object>> viewArticleList() {
         SecSql sql = new SecSql();
-        sql.append("SELECT * FROM article");
-        sql.append("ORDER BY `id` DESC");
+        sql.append("SELECT a.id, a.regDate, a.title, a.`body`, m.nickName FROM article a");
+        sql.append("INNER JOIN `member` m");
+        sql.append("ON a.author = m.id");
+        sql.append("ORDER BY a.id DESC");
         return DBUtil.selectRows(con, sql);
     }
 
@@ -40,7 +43,10 @@ public class ArticleDao {
 
     public Map<String, Object> viewOneArticle(int Idx) {
         SecSql sql = new SecSql();
-        sql.append("SELECT * FROM article WHERE `id` = ?;", Idx);
+        sql.append("SELECT a.id, a.regDate, a.updateDate, a.author, a.title, a.`body`, m.nickName FROM article a");
+        sql.append("INNER JOIN `member` m");
+        sql.append("ON a.author = m.id");
+        sql.append("WHERE a.id = ?;", Idx);
         return DBUtil.selectRow(con, sql);
     }
 
