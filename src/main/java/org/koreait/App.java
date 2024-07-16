@@ -21,9 +21,11 @@ public class App {
 
             String cmd = sc.nextLine();
             String[] cmdBits = cmd.split(" ");
+            int page = -1;
             String controllerName = "";
             String actionMethod = "";
             int idx = 0;
+            String searchKeyword = "";
             if (cmdBits.length == 1) {
                 actionMethod = cmdBits[0];
             }
@@ -31,13 +33,25 @@ public class App {
                 controllerName = cmdBits[0];
                 actionMethod = cmdBits[1];
             }
-            else if (cmdBits.length == 3) {
+            else if (cmdBits.length >= 3) {
                 controllerName = cmdBits[0];
                 actionMethod = cmdBits[1];
-                try {
-                    idx = Integer.parseInt(cmdBits[2]);
-                } catch (NumberFormatException e) {
-                    System.out.println("삭제/수정 id는 정수여야 합니다.");
+                if (actionMethod.equals("list")) {
+                    if (cmdBits.length == 4) {
+                        try {
+                            page = Integer.parseInt(cmdBits[2]);
+                        } catch (NumberFormatException e) {
+                            System.out.println("article page는 정수여야 합니다.");
+                        }
+                        searchKeyword = cmdBits[3];
+                    }
+                    else searchKeyword = cmdBits[2];
+                } else {
+                    try {
+                        idx = Integer.parseInt(cmdBits[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("삭제/수정 id는 정수여야 합니다.");
+                    }
                 }
             }
 
@@ -49,7 +63,7 @@ public class App {
             }
 
             switch (controllerName) {
-                case "article" -> Container.articleController.doAction(actionMethod, idx);
+                case "article" -> Container.articleController.doAction(actionMethod, idx, page, searchKeyword);
                 case "member" -> Container.memberController.doAction(actionMethod, idx);
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }

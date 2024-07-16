@@ -27,12 +27,31 @@ public class ArticleDao {
         return DBUtil.insert(con, sql);
     }
 
-    public List<Map<String, Object>> viewArticleList() {
+    public List<Map<String, Object>> viewArticleList(Map<String, Object> args) {
         SecSql sql = new SecSql();
+        String searchKeyword = args.get("searchKeyword").toString();
+        int limitFrom = -1;
+        int limitTake = -1;
+
+        if (args.containsKey("limitFrom")) {
+            limitFrom = Integer.parseInt(args.get("limitFrom").toString());
+        }
+        if (args.containsKey("limitTake")) {
+            limitTake = Integer.parseInt(args.get("limitTake").toString());
+        }
+
         sql.append("SELECT a.id, a.regDate, a.title, a.`body`, m.nickName FROM article a");
         sql.append("INNER JOIN `member` m");
         sql.append("ON a.author = m.id");
+        if (!searchKeyword.isEmpty()) {
+            searchKeyword = "%" + searchKeyword + "%";
+            sql.append("WHERE a.title LIKE ?", searchKeyword);
+        }
         sql.append("ORDER BY a.id DESC");
+        if (limitFrom != -1) {
+            sql.append("LIMIT ?, ?", limitFrom, limitTake);
+        }
+
         return DBUtil.selectRows(con, sql);
     }
 

@@ -4,6 +4,7 @@ import org.koreait.util.Container;
 import org.koreait.Service.ArticleService;
 import org.koreait.util.Session;
 import org.koreait.util.Util;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +17,10 @@ public class ArticleController {
         this.session = Container.session;
     }
 
-    public void doAction(String actionMethod, int idx) {
-        if (session.loginMember == null){
+    public void doAction(String actionMethod, int idx, int page, String searchKeyword) {
+        if (session.loginMember == null) {
             switch (actionMethod) {
-                case "list" -> doList();
+                case "list" -> doList(page, searchKeyword);
                 case "write", "delete", "update", "detail" -> System.out.println("로그인 후에 이용해주세요.");
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
@@ -27,7 +28,7 @@ public class ArticleController {
         }
         switch (actionMethod) {
             case "write" -> doWrite();
-            case "list" -> doList();
+            case "list" -> doList(page, searchKeyword);
             case "delete" -> doDelete(idx);
             case "update" -> doUpdate(idx);
             case "detail" -> viewDetail(idx);
@@ -54,20 +55,28 @@ public class ArticleController {
         System.out.printf("%d번 게시글이 작성되었습니다.\n", lastId);
     }
 
-    public void doList() {
+    public void doList(int page, String searchKeyword) {
+        int itemsInPage = 10;
+        List<Map<String, Object>> rs = articleService.viewArticleList(page, itemsInPage, searchKeyword);
+        if (rs.isEmpty()) {
+            if (searchKeyword.isEmpty()) System.out.println("아직 아무런 글도 없습니다.");
+            else System.out.println("해당 키워드를 포함하는 글이 없습니다.");
+            return;
+        }
+        if (page != -1) System.out.println("===== " + page + " 페이지 =====");
         System.out.println("  번호  /      일시      /   작성자   /      제목      /     내용     ");
-        List<Map<String, Object>> rs = articleService.viewArticleList();
         for (Map<String, Object> map : rs) {
             String displayId = map.get("id").toString();
             String displayRegDate = dateTimeForDisplay(map.get("regDate").toString());
             String displayNickName = subForDisplay(map.get("nickName").toString());
-            String displayTitle = subForDisplay(map.get("title").toString());
+            //String displayTitle = subForDisplay(map.get("title").toString());
+            String displayTitle = map.get("title").toString();
             String displayBody = subForDisplay(map.get("body").toString());
 
             if (displayId.length() == 1) displayId = "0" + displayId;
 
             System.out.printf("   %s   /   %s   /   %s   /     %s     /     %s     \n",
-                    displayId, displayRegDate, displayNickName, displayBody, displayTitle);
+                    displayId, displayRegDate, displayNickName, displayTitle, displayBody);
         }
     }
 
