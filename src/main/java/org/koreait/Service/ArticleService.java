@@ -1,6 +1,8 @@
 package org.koreait.Service;
 
 import org.koreait.DAO.ArticleDao;
+import org.koreait.util.Container;
+
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +11,8 @@ public class ArticleService {
 
     ArticleDao articleDao;
 
-    public ArticleService(Connection con) {
-        this.articleDao = new ArticleDao(con);
+    public ArticleService() {
+        this.articleDao = Container.articleDao;
     }
 
     public int insertArticle(String title, String body, int nowMemberId) {

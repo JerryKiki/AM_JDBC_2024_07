@@ -1,24 +1,23 @@
 package org.koreait.controller;
 
-import org.koreait.Container;
+import org.koreait.util.Container;
 import org.koreait.Service.ArticleService;
+import org.koreait.util.Session;
 import org.koreait.util.Util;
-
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
 public class ArticleController {
-    private Connection con;
     private ArticleService articleService;
+    private Session session;
 
-    public ArticleController(Connection con) {
-        this.con = con;
-        this.articleService = new ArticleService(con);
+    public ArticleController() {
+        this.articleService = Container.articleService;
+        this.session = Container.session;
     }
 
     public void doAction(String actionMethod, int idx) {
-        if (MemberController.getLoginMember() == null){
+        if (session.loginMember == null){
             switch (actionMethod) {
                 case "list" -> doList();
                 case "write", "delete", "update", "detail" -> System.out.println("로그인 후에 이용해주세요.");
@@ -37,8 +36,7 @@ public class ArticleController {
     }
 
     public void doWrite() {
-        Map<String, Object> nowMember = MemberController.getLoginMember();
-        int nowMemberId = Integer.parseInt(nowMember.get("id").toString());
+        int nowMemberId = session.loginMemberId;
         System.out.println("게시글을 작성합니다.");
         System.out.print("title : ");
         String title = Container.getSc().nextLine();
@@ -74,8 +72,7 @@ public class ArticleController {
     }
 
     public void doDelete(int idx) {
-        Map<String, Object> nowMember = MemberController.getLoginMember();
-        String nowMemberId = nowMember.get("id").toString();
+        int nowMemberId = session.loginMemberId;
 
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
@@ -84,12 +81,12 @@ public class ArticleController {
                 System.out.printf("%d번 article은 없습니다.\n", idx);
                 return;
             }
-            if (!checking.get("author").toString().equals(nowMemberId)) {
+            if (!(Integer.parseInt(checking.get("author").toString()) == nowMemberId)) {
                 System.out.println("자신이 작성한 글만 지울 수 있습니다.");
                 return;
             }
-            articleService.deleteArticle(idx);
-            System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
+            int row = articleService.deleteArticle(idx);
+            if (row != 0) System.out.printf("%d번 article이 삭제되었습니다.\n", idx);
         }
     }
 
@@ -110,14 +107,13 @@ public class ArticleController {
     }
 
     public void doUpdate(int idx) {
-        Map<String, Object> nowMember = MemberController.getLoginMember();
-        String nowMemberId = nowMember.get("id").toString();
+        int nowMemberId = session.loginMemberId;
 
         if (idx == 0) System.out.println("올바른 id를 입력해주세요.");
         else {
             Map<String, Object> checking = articleService.viewOneArticle(idx);
             if (checking.get("id") != null) {
-                if (!checking.get("author").toString().equals(nowMemberId)) {
+                if (!(Integer.parseInt(checking.get("author").toString()) == nowMemberId)) {
                     System.out.println("자신이 작성한 글만 수정할 수 있습니다.");
                     return;
                 }

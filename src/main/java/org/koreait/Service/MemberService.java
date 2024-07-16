@@ -1,17 +1,17 @@
 package org.koreait.Service;
 
 import org.koreait.DAO.MemberDao;
+import org.koreait.util.Container;
+
 import java.sql.Connection;
 import java.util.Map;
 
 public class MemberService {
 
     private MemberDao memberDao;
-    private Connection con;
 
-    public MemberService(Connection con) {
-        this.memberDao = new MemberDao(con);
-        this.con = con;
+    public MemberService() {
+        this.memberDao = Container.memberDao;
     }
 
     public boolean checkMemberId(String tryingJoin) {

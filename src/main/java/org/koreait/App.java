@@ -1,10 +1,6 @@
 package org.koreait;
 
-import org.koreait.controller.ArticleController;
-import org.koreait.util.Connector;
-import org.koreait.controller.MemberController;
-
-import java.sql.Connection;
+import org.koreait.util.Container;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -13,11 +9,9 @@ public class App {
     static int system_status = 0;
 
     public void run() throws SQLException {
-        Scanner sc = new Scanner(System.in);
-        Connector connector = new Connector();
-        Connection con = connector.getCon();
-        ArticleController articleController = new ArticleController(con);
-        MemberController memberController = new MemberController(con);
+
+        Container.init();
+        Scanner sc = Container.getSc();
 
         System.out.println("== Article Manager Run ==");
         system_status = 1;
@@ -49,14 +43,14 @@ public class App {
 
             if (actionMethod.equals("exit")) {
                 System.out.println("== Article Manager Exit ==");
-                connector.closeConnection();
+                Container.close();
                 system_status = 0;
                 break;
             }
 
             switch (controllerName) {
-                case "article" -> articleController.doAction(actionMethod, idx);
-                case "member" -> memberController.doAction(actionMethod, idx);
+                case "article" -> Container.articleController.doAction(actionMethod, idx);
+                case "member" -> Container.memberController.doAction(actionMethod, idx);
                 default -> System.out.println("올바른 명령어를 입력해주세요.");
             }
         }

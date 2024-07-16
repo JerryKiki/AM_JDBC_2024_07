@@ -1,5 +1,6 @@
 package org.koreait.DAO;
 
+import org.koreait.util.Container;
 import org.koreait.util.DBUtil;
 import org.koreait.util.SecSql;
 
@@ -9,8 +10,8 @@ import java.util.Map;
 public class MemberDao {
     private Connection con;
 
-    public MemberDao(Connection con) {
-        this.con = con;
+    public MemberDao() {
+        this.con = Container.con;
     }
 
     public boolean checkMemberId(String tryingJoin) {

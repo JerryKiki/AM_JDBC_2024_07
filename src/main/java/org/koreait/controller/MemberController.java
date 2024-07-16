@@ -1,21 +1,19 @@
 package org.koreait.controller;
 
-import org.koreait.Container;
+import org.koreait.util.Container;
 import org.koreait.Service.MemberService;
+import org.koreait.util.Session;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemberController {
-    private static Map<String, Object> loginMember;
     private MemberService memberService;
-    private Connection con;
+    private Session session;
 
-    public MemberController(Connection con) {
-        this.con = con;
-        memberService = new MemberService(con);
-        loginMember = null;
+    public MemberController() {
+        memberService = Container.memberService;
+        session = Container.session;
     }
 
     public void doAction(String actionMethod, int idx) {
@@ -29,7 +27,7 @@ public class MemberController {
     }
 
     public void joinMember() {
-        if (loginMember != null) {
+        if (session.loginMember != null) {
             System.out.println("로그인 중에는 이용하실 수 없습니다.");
             return;
         }
@@ -71,7 +69,7 @@ public class MemberController {
     }
 
     public void loginMember() {
-        if (loginMember != null) {
+        if (session.loginMember != null) {
             System.out.println("이미 로그인 중입니다.");
             return;
         }
@@ -112,30 +110,30 @@ public class MemberController {
                 continue;
             }
 
-            loginMember = tryingLogin;
+            session.login(tryingLogin, Integer.parseInt(tryingLogin.get("id").toString()));
 
             System.out.println("== 로그인 성공 ==");
-            System.out.printf("== %s님 환영합니다 ==\n", loginMember.get("nickName"));
+            System.out.printf("== %s님 환영합니다 ==\n", session.loginMember.get("nickName"));
             break;
         }
     }
 
     public void showMyPage() {
-        if (loginMember != null) {
+        if (session.loginMember != null) {
             System.out.println("== member profile ==");
-            System.out.println("고유번호 : " + loginMember.get("id"));
-            System.out.println("아이디 : " + loginMember.get("loginId"));
-            System.out.println("가입일시 : " + loginMember.get("regDate"));
-            System.out.println("닉네임 : " + loginMember.get("nickName"));
+            System.out.println("고유번호 : " + session.loginMember.get("id"));
+            System.out.println("아이디 : " + session.loginMember.get("loginId"));
+            System.out.println("가입일시 : " + session.loginMember.get("regDate"));
+            System.out.println("닉네임 : " + session.loginMember.get("nickName"));
         } else System.out.println("로그인 후 사용해주세요.");
     }
 
     public void logoutMember() {
-        if (loginMember == null) {
+        if (session.loginMember == null) {
             System.out.println("이미 로그아웃 상태입니다.");
         } else {
-            System.out.printf("== %s님 로그아웃 ==\n", loginMember.get("nickName"));
-            loginMember = null;
+            System.out.printf("== %s님 로그아웃 ==\n", session.loginMember.get("nickName"));
+            session.logout();
         }
     }
 
@@ -148,9 +146,5 @@ public class MemberController {
             System.out.println("공백은 포함하실 수 없습니다.");
             return "";
         } else return s;
-    }
-
-    public static Map<String, Object> getLoginMember() {
-        return loginMember;
     }
 }

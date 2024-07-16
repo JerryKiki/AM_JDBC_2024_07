@@ -1,5 +1,6 @@
 package org.koreait.DAO;
 
+import org.koreait.util.Container;
 import org.koreait.util.DBUtil;
 import org.koreait.util.SecSql;
 
@@ -11,8 +12,8 @@ public class ArticleDao {
 
     Connection con;
 
-    public ArticleDao(Connection con) {
-        this.con = con;
+    public ArticleDao() {
+        this.con = Container.con;
     }
 
     public int insertArticle(String title, String body, int nowMemberId) {
