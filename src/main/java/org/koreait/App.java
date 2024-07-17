@@ -1,6 +1,8 @@
 package org.koreait;
 
 import org.koreait.util.Container;
+import org.koreait.util.Rq;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -20,40 +22,14 @@ public class App {
             System.out.print("명령어> ");
 
             String cmd = sc.nextLine();
-            String[] cmdBits = cmd.split(" ");
-            int page = -1;
-            String controllerName = "";
-            String actionMethod = "";
-            int idx = 0;
-            String searchKeyword = "";
-            if (cmdBits.length == 1) {
-                actionMethod = cmdBits[0];
-            }
-            else if (cmdBits.length == 2) {
-                controllerName = cmdBits[0];
-                actionMethod = cmdBits[1];
-            }
-            else if (cmdBits.length >= 3) {
-                controllerName = cmdBits[0];
-                actionMethod = cmdBits[1];
-                if (actionMethod.equals("list")) {
-                    if (cmdBits.length == 4) {
-                        try {
-                            page = Integer.parseInt(cmdBits[2]);
-                        } catch (NumberFormatException e) {
-                            System.out.println("article page는 정수여야 합니다.");
-                        }
-                        searchKeyword = cmdBits[3];
-                    }
-                    else searchKeyword = cmdBits[2];
-                } else {
-                    try {
-                        idx = Integer.parseInt(cmdBits[2]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("삭제/수정 id는 정수여야 합니다.");
-                    }
-                }
-            }
+
+            Rq rq = new Rq(cmd);
+
+            int page = rq.getPage();
+            String controllerName = rq.getControllerName();
+            String actionMethod = rq.getActionMethod();
+            int idx = rq.getIdx();
+            String searchKeyword = rq.getSearchKeyword();
 
             if (actionMethod.equals("exit")) {
                 System.out.println("== Article Manager Exit ==");
